@@ -1,0 +1,25 @@
+{
+    "type": "addon",
+    "key": "rj-self-delete",
+    "name": "Self Delete",
+    "description": "Allows your users to delete their <strong>profile</strong>. Content will not be removed.",
+    "license": "MIT",
+    "version": "0.0.1",
+    "settingsUrl": "/settings/selfdelete",
+    "pluginUrl": "https://github.com/r-j/rj-self-delete",
+    "className": "SelfDeletePlugin",
+    "authors": [
+        {
+            "name": "Robin Jurinka",
+            "homepage": "https://open.vanillaforums.com/profile/r_j"
+        }
+    ],
+    "priority": 10,
+    "hasLocale": true,
+    "mobileFriendly": true,
+    "usePopupSettings": true,
+    "requiredTheme": false,
+    "requiredPlugin": false,
+    "allowDisable": true,
+    "hidden": false
+}
