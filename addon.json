@@ -6,6 +6,9 @@
     "license": "MIT",
     "version": "0.0.1",
     "settingsUrl": "/settings/selfdelete",
+    "registerPermissions": [
+        "Plugin.SelfDelete.Allow"
+    ],
     "pluginUrl": "https://github.com/r-j/rj-self-delete",
     "className": "SelfDeletePlugin",
     "authors": [
