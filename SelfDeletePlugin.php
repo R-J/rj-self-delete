@@ -34,17 +34,25 @@ class SelfDeletePlugin extends Gdn_Plugin {
         $args['SideMenu']->addLink(
             'Options',
             Gdn::translate('Delete Account'),
-            '/plugin/selfdelete',
+            '/profile/selfdelete',
             'Plugins.SelfDelete.Allow',
-            ['class' => 'self-delete']
+            ['class' => 'self-delete Popup']
         );
     }
 
-    public function pluginController_selfDelete_handler($sender, $args) {
+    public function profileController_selfDelete_create($sender, $args) {
         $sender->permission('Plugins.SelfDelete.Allow');
+
+        // Get user data.
+        $sender->getUserInfo('', '', Gdn::session()->UserID);
+
+        $sender->Form = new \Gdn_Form();
         if ($sender->Form->authenticatedPostBack(true)) {
         }
-        $sender->title(Gdn::translate('Delete your own account'));
+
+        $title = Gdn::translate('Delete Account');
+        $sender->title($title);
+        $sender->_setBreadcrumbs($title, $sender->canonicalUrl());
         $sender->render('selfdelete', '', 'plugins/rj-self-delete');
     }
 }
