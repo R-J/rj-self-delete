@@ -14,7 +14,7 @@
         </li>
         <li class="self-delete-password">
             <?= $this->Form->label('Please enter your password to validate this action', 'Password') ?>
-            <?= $this->Form->input('Password', ['type' => 'password']) ?>
+            <?= $this->Form->input('Password', 'Password', ['type' => 'password']) ?>
         </li>
     </ul>
     <?= $this->Form->close('Delete Account', '', ['class' => 'Button Danger']) ?>
