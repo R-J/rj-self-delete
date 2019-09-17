@@ -47,8 +47,45 @@ class SelfDeletePlugin extends Gdn_Plugin {
         $sender->getUserInfo('', '', Gdn::session()->UserID);
 
         $sender->Form = new \Gdn_Form();
-        if ($sender->Form->authenticatedPostBack(true)) {
+        $validation = new \Gdn_Validation();
+
+        if ($sender->Form->authenticatedPostBack() == true) {
+            $validation->applyRule('Email', ['Required', 'Email']);
+            $validation->applyRule('Password', 'Required');
+            $formValues = $sender->Form->formValues();
+            $validation->validate($formValues);
+
+            // Get user and ensure it is the session user.
+            $user = $sender->UserModel->getByEmail($formValues['Email']);
+            if (!$user || $user->UserID != Gdn::session()->UserID) {
+                $validation->addValidationResult(
+                    'Email',
+                    'Authentication failed'
+                );
+            } else {
+                // Check the password.
+                $passwordHash = new \Gdn_PasswordHash();
+                $passwordChecked = $passwordHash->checkPassword(
+                    $formValues['Password'],
+                    $user->Password,
+                    $user->HashMethod
+                );
+                // Rate limiting.
+                $sender->UserModel->rateLimit($user);
+                if ($passwordChecked === true) {
+                    Gdn::session()->end();
+                    $sender->UserModel->deleteID($user->UserID, ['DeleteMethod' => 'keep']);
+                } else {
+                    $validation->addValidationResult(
+                        'Email',
+                        'Authentication failed'
+                    );
+                }
+            }
         }
+
+        $sender->Form->setValidationResults($validation->results());
+
 
         $title = Gdn::translate('Delete Account');
         $sender->title($title);
