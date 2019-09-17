@@ -4,7 +4,7 @@
     "name": "Self Delete",
     "description": "Allows your users to delete their <strong>profile</strong>. Content will not be removed.",
     "license": "MIT",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "registerPermissions": [
         "Plugins.SelfDelete.Allow"
     ],
@@ -19,9 +19,9 @@
     "priority": 10,
     "hasLocale": true,
     "mobileFriendly": true,
-    "usePopupSettings": true,
-    "requiredTheme": false,
-    "requiredPlugin": false,
+    "require": {
+        "vanilla": ">=3.2"
+    },
     "allowDisable": true,
     "hidden": false
 }
