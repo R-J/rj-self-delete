@@ -83,6 +83,7 @@ class SelfDeletePlugin extends Gdn_Plugin {
                     Gdn::session()->end();
                     // Delete user.
                     $sender->UserModel->deleteID($user->UserID, ['DeleteMethod' => 'keep']);
+                    redirectTo('/');
                 } else {
                     $validation->addValidationResult(
                         'Email',
