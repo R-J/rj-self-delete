@@ -5,9 +5,8 @@
     "description": "Allows your users to delete their <strong>profile</strong>. Content will not be removed.",
     "license": "MIT",
     "version": "0.0.1",
-    "settingsUrl": "/settings/selfdelete",
     "registerPermissions": [
-        "Plugin.SelfDelete.Allow"
+        "Plugins.SelfDelete.Allow"
     ],
     "pluginUrl": "https://github.com/r-j/rj-self-delete",
     "className": "SelfDeletePlugin",
