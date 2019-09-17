@@ -5,8 +5,6 @@ namespace RJPlugins;
 use Gdn_Plugin;
 use Gdn;
 
-// Add option to profile "Delete Account"
-// Require re-entering password
 class SelfDeletePlugin extends Gdn_Plugin {
     /*
     // maybe a better place for the self delete link, but it looks weird...
@@ -36,11 +34,19 @@ class SelfDeletePlugin extends Gdn_Plugin {
             Gdn::translate('Delete Account'),
             '/profile/selfdelete',
             'Plugins.SelfDelete.Allow',
-            ['class' => 'self-delete Popup']
+            ['class' => 'self-delete']
         );
     }
 
-    public function profileController_selfDelete_create($sender, $args) {
+    /**
+     * Form that requies authentication and will allow user to delete
+     * (method "keep") their account.
+     *
+     * @param ProfileController $sender
+     *
+     * @return void.
+     */
+    public function profileController_selfDelete_create($sender) {
         $sender->permission('Plugins.SelfDelete.Allow');
 
         // Get user data.
@@ -73,7 +79,9 @@ class SelfDeletePlugin extends Gdn_Plugin {
                 // Rate limiting.
                 $sender->UserModel->rateLimit($user);
                 if ($passwordChecked === true) {
+                    // End session.
                     Gdn::session()->end();
+                    // Delete user.
                     $sender->UserModel->deleteID($user->UserID, ['DeleteMethod' => 'keep']);
                 } else {
                     $validation->addValidationResult(
@@ -85,7 +93,6 @@ class SelfDeletePlugin extends Gdn_Plugin {
         }
 
         $sender->Form->setValidationResults($validation->results());
-
 
         $title = Gdn::translate('Delete Account');
         $sender->title($title);
