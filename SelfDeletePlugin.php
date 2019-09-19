@@ -4,8 +4,8 @@ namespace RJPlugins;
 
 use Gdn_Plugin;
 use Gdn;
-// TODO: prevent user registration with same name!!!
-// 
+
+// TODO: Ensure UserModel->getByUserEmail includes deleted users
 class SelfDeletePlugin extends Gdn_Plugin {
     public function setup() {
         $this->structure();
@@ -138,7 +138,7 @@ class SelfDeletePlugin extends Gdn_Plugin {
     }
 
     public function userModel_beforeSaveValidation_handler($sender, $args) {
-        $user = $sender->getByName(
+        $user = $sender->getByUsername(
             sprintf(
                 Gdn::config('Plugin.SelfDelete.UserNameScheme', '+ %s +'),
                 $args['FormPostValues']['Name']
