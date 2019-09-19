@@ -11,7 +11,7 @@ class SelfDeletePlugin extends Gdn_Plugin {
     }
 
     public function structure() {
-        Gdn::config()->touch('Plugin.SelfDelete.UserNameString', '+ %s +');
+        Gdn::config()->touch('Plugin.SelfDelete.UserNameScheme', '+ %s +');
     }
 
     public function assetModel_styleCss_handler($sender) {
@@ -81,7 +81,7 @@ class SelfDeletePlugin extends Gdn_Plugin {
                     'Authentication failed'
                 );
             } else {
-                if (passwordCheckPassed($sender, $formValues['Password'], $user)) {
+                if ($this->passwordCheckPassed($sender, $formValues['Password'], $user)) {
                     // End session and delete user.
                     Gdn::session()->end();
                     $sender->UserModel->deleteID($user->UserID, ['DeleteMethod' => 'keep']);
@@ -90,7 +90,7 @@ class SelfDeletePlugin extends Gdn_Plugin {
                         $user->UserID,
                         'Name',
                         sprintf(
-                            Gdn::config('Plugin.SelfDelete.UserNameString', '+ %s +'),
+                            Gdn::config('Plugin.SelfDelete.UserNameScheme', '+ %s +'),
                             $user->Name
                         )
                     );
