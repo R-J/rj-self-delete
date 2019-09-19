@@ -1,0 +1,5 @@
+a[href^="/profile/%2B%20"] {
+    pointer-events: none;
+    cursor: default;
+    text-decoration: none;
+}

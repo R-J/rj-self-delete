@@ -6,6 +6,18 @@ use Gdn_Plugin;
 use Gdn;
 
 class SelfDeletePlugin extends Gdn_Plugin {
+    public function setup() {
+        $this->structure();
+    }
+
+    public function structure() {
+        Gdn::config()->touch('Plugin.SelfDelete.UserNameString', '+ %s +');
+    }
+
+    public function assetModel_styleCss_handler($sender) {
+        $sender->addCssFile('self-delete.css', 'plugins/rj-self-delete');
+    }
+
     /*
     // maybe a better place for the self delete link, but it looks weird...
     public function profileController_editMyAccountAfter_handler($sender, $args) {
@@ -69,20 +81,19 @@ class SelfDeletePlugin extends Gdn_Plugin {
                     'Authentication failed'
                 );
             } else {
-                // Check the password.
-                $passwordHash = new \Gdn_PasswordHash();
-                $passwordChecked = $passwordHash->checkPassword(
-                    $formValues['Password'],
-                    $user->Password,
-                    $user->HashMethod
-                );
-                // Rate limiting.
-                $sender->UserModel->rateLimit($user);
-                if ($passwordChecked === true) {
-                    // End session.
+                if (passwordCheckPassed($sender, $formValues['Password'], $user)) {
+                    // End session and delete user.
                     Gdn::session()->end();
-                    // Delete user.
                     $sender->UserModel->deleteID($user->UserID, ['DeleteMethod' => 'keep']);
+                    // Restore Username
+                    $sender->UserModel->setField(
+                        $user->UserID,
+                        'Name',
+                        sprintf(
+                            Gdn::config('Plugin.SelfDelete.UserNameString', '+ %s +'),
+                            $user->Name
+                        )
+                    );
                     redirectTo('/');
                 } else {
                     $validation->addValidationResult(
@@ -99,5 +110,18 @@ class SelfDeletePlugin extends Gdn_Plugin {
         $sender->title($title);
         $sender->_setBreadcrumbs($title, $sender->canonicalUrl());
         $sender->render('selfdelete', '', 'plugins/rj-self-delete');
+    }
+
+    protected function passwordCheckPassed($sender, $password, $user) {
+        // Check the password.
+        $passwordHash = new \Gdn_PasswordHash();
+        $passwordChecked = $passwordHash->checkPassword(
+            $password,
+            $user->Password,
+            $user->HashMethod
+        );
+        // Rate limiting.
+        $sender->UserModel->rateLimit($user);
+        return $passwordChecked;
     }
 }
