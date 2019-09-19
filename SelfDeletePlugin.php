@@ -84,7 +84,7 @@ class SelfDeletePlugin extends Gdn_Plugin {
                 if ($this->passwordCheckPassed($sender, $formValues['Password'], $user)) {
                     // End session and delete user.
                     Gdn::session()->end();
-                    $sender->UserModel->deleteID($user->UserID, ['DeleteMethod' => 'keep']);
+                    $this->deleteUser($user);
                     // Restore Username
                     $sender->UserModel->setField(
                         $user->UserID,
@@ -123,5 +123,16 @@ class SelfDeletePlugin extends Gdn_Plugin {
         // Rate limiting.
         $sender->UserModel->rateLimit($user);
         return $passwordChecked;
+    }
+
+    protected function deleteUser($sender, $user) {
+        $sender->UserModel->deleteID(
+            $user->UserID,
+            ['DeleteMethod' => 'keep']
+        );
+        // Do some other clean up
+        // e.g. Profile Extender fields
+        // Reason for application
+        // ...
     }
 }
